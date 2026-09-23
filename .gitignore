@@ -11,3 +11,5 @@ next-env.d.ts
 # OS junk
 .DS_Store
 Thumbs.db
+*.db
+node_modules/
