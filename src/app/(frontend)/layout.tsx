@@ -1,6 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import './styles.css'
+import { Nav } from './_components/Nav'
 
 export const metadata = {
   title: 'GR Aphme',
@@ -17,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             padding: '1.25rem 1.5rem',
           }}
         >
-          <nav
+          <Nav
             style={{
               maxWidth: 960,
               margin: '0 auto',
@@ -43,7 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Link href="/shop" style={{ textDecoration: 'none' }}>
               Shop
             </Link>
-          </nav>
+          </Nav>
         </header>
 
         <div>{children}</div>

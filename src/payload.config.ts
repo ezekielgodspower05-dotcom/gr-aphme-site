@@ -19,7 +19,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Posts],
+  collections: [Users, Media, Posts, Categories, Threads, Replies],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -33,3 +33,6 @@ export default buildConfig({
   sharp,
   plugins: [],
 })
+import { Categories } from './collections/Categories'
+import { Threads } from './collections/Threads'
+import { Replies } from './collections/Replies'
