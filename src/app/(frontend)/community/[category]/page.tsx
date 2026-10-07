@@ -4,12 +4,7 @@ import { headers as nextHeaders } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { RichText } from '@payloadcms/richtext-lexical/react'
-import { ReplyForm } from './ReplyForm'
-import { ThreadDeleteButton } from './ThreadDeleteButton'
-import { ReplyDeleteButton } from './ReplyDeleteButton'
-
 type Params = Promise<{ category: string }>
-
 export default async function CategoryPage({ params }: { params: Params }) {
   const { category } = await params
   const payload = await getPayload({ config })

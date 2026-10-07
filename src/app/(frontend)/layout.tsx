@@ -35,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 textDecoration: 'none',
                 marginRight: 'auto',
               }}
-            >
+             />
               GR Aphme
             </Link>
             <Link href="/blog" style={{ textDecoration: 'none' }}>
