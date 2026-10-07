@@ -1,5 +1,4 @@
 import React from 'react'
-import Link from 'next/link'
 import './styles.css'
 import { Nav } from './_components/Nav'
 
@@ -18,33 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             padding: '1.25rem 1.5rem',
           }}
         >
-          <Nav
-            style={{
-              maxWidth: 960,
-              margin: '0 auto',
-              display: 'flex',
-              gap: '1.5rem',
-              alignItems: 'center',
-            }}
-          >
-            <Link
-              href="/"
-              style={{
-                fontWeight: 700,
-                fontSize: '1.15rem',
-                textDecoration: 'none',
-                marginRight: 'auto',
-              }}
-             />
-              GR Aphme
-            </Link>
-            <Link href="/blog" style={{ textDecoration: 'none' }}>
-              Blog
-            </Link>
-            <Link href="/shop" style={{ textDecoration: 'none' }}>
-              Shop
-            </Link>
-          </Nav>
+          <Nav />
         </header>
 
         <div>{children}</div>
