@@ -7,6 +7,7 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 import { ReplyForm } from './ReplyForm'
 import { ThreadDeleteButton } from './ThreadDeleteButton'
 import { ReplyDeleteButton } from './ReplyDeleteButton'
+import { ReplyEditInline } from './ReplyEditInline'
 import { EditThreadLink } from './EditThreadLink'
 
 type Params = Promise<{ slug: string }>
@@ -77,8 +78,11 @@ export default async function ThreadPage({ params }: { params: Params }) {
         {canDeleteThread && (
           <ThreadDeleteButton threadId={thread.id} categorySlug={category?.slug || 'community'} />
         )}
-        {currentUser && author && author.id === currentUser.id && (
-          <EditThreadLink slug={slug} threadCreatedAt={thread.createdAt} />
+        {canDeleteThread && (
+          <EditThreadLink
+            slug={thread.slug}
+            threadCreatedAt={new Date(thread.createdAt).toISOString()}
+          />
         )}
       </div>
 
@@ -107,6 +111,18 @@ export default async function ThreadPage({ params }: { params: Params }) {
             const canDeleteReply =
               currentUser && rAuthor && (rAuthor.id === currentUser.id || isAdmin)
 
+            const EDIT_WINDOW_MS = 15 * 60 * 1000
+            const replyAgeMs = Date.now() - new Date(reply.createdAt).getTime()
+            const canEditReply =
+              currentUser &&
+              rAuthor &&
+              (rAuthor.id === currentUser.id || isAdmin) &&
+              replyAgeMs < EDIT_WINDOW_MS
+
+            const plainBody = extractPlainText(
+              (reply.body as { root?: unknown })?.root ?? reply.body,
+            )
+
             return (
               <li
                 key={reply.id}
@@ -133,9 +149,18 @@ export default async function ThreadPage({ params }: { params: Params }) {
                   </span>
                   {canDeleteReply && <ReplyDeleteButton replyId={reply.id} />}
                 </div>
-                <div style={{ lineHeight: 1.7 }}>
-                  <RichText data={reply.body} />
-                </div>
+
+                {canEditReply ? (
+                  <ReplyEditInline
+                    replyId={reply.id}
+                    initialBody={plainBody}
+                    initialRichText={reply.body}
+                  />
+                ) : (
+                  <div style={{ lineHeight: 1.7 }}>
+                    <RichText data={reply.body} />
+                  </div>
+                )}
               </li>
             )
           })}
@@ -149,4 +174,17 @@ export default async function ThreadPage({ params }: { params: Params }) {
       )}
     </main>
   )
+}
+
+function extractPlainText(node: unknown): string {
+  if (!node || typeof node !== 'object') return ''
+  const n = node as { text?: string; children?: unknown[]; type?: string }
+  if (typeof n.text === 'string') return n.text
+  if (Array.isArray(n.children)) {
+    const parts = n.children.map(extractPlainText).filter(Boolean)
+    const blockTypes = ['paragraph', 'heading', 'listitem', 'quote']
+    if (n.type && blockTypes.includes(n.type)) return parts.join('')
+    return parts.join('\n\n')
+  }
+  return ''
 }
