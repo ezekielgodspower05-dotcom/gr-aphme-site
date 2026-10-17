@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
+export const dynamic = 'force-dynamic'
+
 export default async function BlogListPage() {
   const payload = await getPayload({ config })
 
@@ -26,9 +28,7 @@ export default async function BlogListPage() {
             >
               {post.title}
             </Link>
-            {post.excerpt && (
-              <p style={{ opacity: 0.75, marginTop: '0.5rem' }}>{post.excerpt}</p>
-            )}
+            {post.excerpt && <p style={{ opacity: 0.75, marginTop: '0.5rem' }}>{post.excerpt}</p>}
           </li>
         ))}
       </ul>

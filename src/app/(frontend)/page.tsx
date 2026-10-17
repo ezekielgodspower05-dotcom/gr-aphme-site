@@ -1,9 +1,11 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import Image from 'next/image'
 
-export default async function BlogListPage() {
+export const dynamic = 'force-dynamic'
+
+export default async function HomePage() {
   const payload = await getPayload({ config })
 
   const posts = await payload.find({
@@ -20,9 +22,7 @@ export default async function BlogListPage() {
         Notes from the studio — process, ideas, and what's coming next.
       </p>
 
-      {posts.docs.length === 0 && (
-        <p style={{ opacity: 0.6 }}>No posts yet. Check back soon.</p>
-      )}
+      {posts.docs.length === 0 && <p style={{ opacity: 0.6 }}>No posts yet. Check back soon.</p>}
 
       <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
         {posts.docs.map((post) => {

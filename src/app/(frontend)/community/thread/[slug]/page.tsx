@@ -12,6 +12,8 @@ import { EditThreadLink } from './EditThreadLink'
 
 type Params = Promise<{ slug: string }>
 
+export const dynamic = 'force-dynamic'
+
 export default async function ThreadPage({ params }: { params: Params }) {
   const { slug } = await params
   const payload = await getPayload({ config })

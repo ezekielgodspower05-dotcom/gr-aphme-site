@@ -4,6 +4,9 @@ import { headers as nextHeaders } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { RichText } from '@payloadcms/richtext-lexical/react'
+
+export const dynamic = 'force-dynamic'
+
 type Params = Promise<{ category: string }>
 export default async function CategoryPage({ params }: { params: Params }) {
   const { category } = await params

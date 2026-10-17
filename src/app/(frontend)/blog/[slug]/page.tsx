@@ -5,6 +5,8 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 
+export const dynamic = 'force-dynamic'
+
 type Params = Promise<{ slug: string }>
 
 export default async function PostPage({ params }: { params: Params }) {
@@ -38,9 +40,7 @@ export default async function PostPage({ params }: { params: Params }) {
         ← Back to blog
       </Link>
 
-      <h1 style={{ fontSize: '2.5rem', lineHeight: 1.2, margin: '0 0 1rem 0' }}>
-        {post.title}
-      </h1>
+      <h1 style={{ fontSize: '2.5rem', lineHeight: 1.2, margin: '0 0 1rem 0' }}>{post.title}</h1>
 
       {post.publishedAt && (
         <p style={{ opacity: 0.5, marginBottom: '2.5rem', fontSize: '0.95rem' }}>
