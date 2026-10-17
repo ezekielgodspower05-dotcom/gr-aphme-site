@@ -12,6 +12,10 @@ import { Posts } from './collections/Posts'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+if (process.env.NODE_ENV === 'production') {
+  console.log('[BLOB CONFIG] Token exists:', Boolean(process.env.BLOB_READ_WRITE_TOKEN))
+  console.log('[BLOB CONFIG] Store ID exists:', Boolean(process.env.BLOB_STORE_ID))
+}
 
 export default buildConfig({
   admin: {
@@ -38,10 +42,13 @@ export default buildConfig({
       collections: {
         media: true,
       },
-      token: process.env.BLOB_READ_WRITE_TOKEN || '',
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+      storeId: process.env.BLOB_STORE_ID,
     }),
   ],
 })
 import { Categories } from './collections/Categories'
 import { Threads } from './collections/Threads'
 import { Replies } from './collections/Replies'
+console.log('BLOB TOKEN EXISTS:', !!process.env.BLOB_READ_WRITE_TOKEN)
+console.log('BLOB TOKEN PREFIX:', process.env.BLOB_READ_WRITE_TOKEN?.substring(0, 15))
