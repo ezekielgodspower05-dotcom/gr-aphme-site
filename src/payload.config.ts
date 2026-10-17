@@ -48,5 +48,3 @@ export default buildConfig({
 import { Categories } from './collections/Categories'
 import { Threads } from './collections/Threads'
 import { Replies } from './collections/Replies'
-console.log('BLOB TOKEN EXISTS:', !!process.env.BLOB_READ_WRITE_TOKEN)
-console.log('BLOB TOKEN PREFIX:', process.env.BLOB_READ_WRITE_TOKEN?.substring(0, 15))
