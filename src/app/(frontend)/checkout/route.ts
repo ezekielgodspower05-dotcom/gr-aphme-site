@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
-// Initialize Stripe with the secret key
+// The 'as any' forces TypeScript to ignore the SDK version mismatch
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2023-10-16', // Using a stable version to avoid type mismatches
+  apiVersion: '2026-09-30.endive' as any,
 })
 
 export async function POST(req: NextRequest) {
@@ -14,7 +14,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Cart is empty' }, { status: 400 })
     }
 
-    // Map cart items to Stripe line_items
     const lineItems = items.map((item: any) => ({
       price_data: {
         currency: 'usd',
@@ -27,28 +26,21 @@ export async function POST(req: NextRequest) {
       quantity: item.quantity,
     }))
 
-    // Create the session
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
+      // Changed to allowed_payment_method_types for the new SDK
+      allowed_payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
-      // FORCING the URL to localhost for testing
       success_url: `http://localhost:3000/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `http://localhost:3000/cart`,
     })
 
-    // Send the URL back
     return NextResponse.json({ url: session.url })
-    
   } catch (error: any) {
-    // THIS IS THE CRUCIAL PART: It will print the exact Stripe error to your VS Code terminal
     console.error('=== STRIPE ERROR ===')
     console.error(error.message)
     console.error('====================')
-    
-    return NextResponse.json(
-      { error: error.message || 'Something went wrong' }, 
-      { status: 500 }
-    )
+
+    return NextResponse.json({ error: error.message || 'Something went wrong' }, { status: 500 })
   }
 }
