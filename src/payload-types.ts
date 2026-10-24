@@ -73,6 +73,7 @@ export interface Config {
     categories: Category;
     threads: Thread;
     replies: Reply;
+    products: Product;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -86,6 +87,7 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     threads: ThreadsSelect<false> | ThreadsSelect<true>;
     replies: RepliesSelect<false> | RepliesSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -287,6 +289,53 @@ export interface Reply {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  title: string;
+  slug: string;
+  type: 'physical' | 'digital';
+  /**
+   * Price in USD
+   */
+  price: number;
+  images?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  sizes?: ('XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL')[] | null;
+  /**
+   * E.g., Black, White, Navy
+   */
+  colors?: string[] | null;
+  /**
+   * Upload the PSD, AI, or Canva template here.
+   */
+  digitalFile?: (number | null) | Media;
+  license?: ('personal' | 'commercial') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -332,6 +381,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'replies';
         value: number | Reply;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: number | Product;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -467,6 +520,29 @@ export interface RepliesSelect<T extends boolean = true> {
   thread?: T;
   author?: T;
   body?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  type?: T;
+  price?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  description?: T;
+  sizes?: T;
+  colors?: T;
+  digitalFile?: T;
+  license?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -24,7 +24,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Posts, Categories, Threads, Replies],
+  collections: [Users, Media, Posts, Categories, Threads, Replies, Products],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -48,3 +48,4 @@ export default buildConfig({
 import { Categories } from './collections/Categories'
 import { Threads } from './collections/Threads'
 import { Replies } from './collections/Replies'
+import { Products } from './collections/Products'

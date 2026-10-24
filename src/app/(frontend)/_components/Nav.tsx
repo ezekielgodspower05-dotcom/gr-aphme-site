@@ -1,5 +1,5 @@
 'use client'
-
+import { useCart } from './CartContext'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -8,6 +8,7 @@ type User = { id: string; email: string; username?: string } | null
 
 export function Nav() {
   const router = useRouter()
+  const { totalItems, openCart } = useCart()
   const [user, setUser] = useState<User>(null)
   const [loading, setLoading] = useState(true)
 
@@ -85,6 +86,42 @@ export function Nav() {
           </Link>
         </>
       )}
+      <button
+        onClick={openCart}
+        style={{
+          background: 'none',
+          border: '1px solid #444',
+          color: 'inherit',
+          padding: '0.4rem 0.75rem',
+          borderRadius: 4,
+          fontSize: '0.85rem',
+          cursor: 'pointer',
+          position: 'relative',
+        }}
+      >
+        Cart
+        {totalItems > 0 && (
+          <span
+            style={{
+              position: 'absolute',
+              top: -8,
+              right: -8,
+              background: '#fff',
+              color: '#000',
+              borderRadius: '50%',
+              width: 20,
+              height: 20,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '0.7rem',
+              fontWeight: 700,
+            }}
+          >
+            {totalItems}
+          </span>
+        )}
+      </button>
     </nav>
   )
 }
