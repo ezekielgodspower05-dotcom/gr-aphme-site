@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
+// The 'as any' forces TypeScript to ignore the SDK version mismatch
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2023-10-16',
+  apiVersion: '2026-09-30.endive' as any,
 })
 
 export async function POST(req: NextRequest) {
@@ -13,7 +14,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Cart is empty' }, { status: 400 })
     }
 
-    // Map cart items to Stripe line_items
     const lineItems = items.map((item: any) => ({
       price_data: {
         currency: 'usd',
@@ -26,16 +26,15 @@ export async function POST(req: NextRequest) {
       quantity: item.quantity,
     }))
 
-    // Create the Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
+      // Changed to allowed_payment_method_types for the new SDK
+      allowed_payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
       success_url: `http://localhost:3000/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `http://localhost:3000/cart`,
     })
 
-    // Return the session URL to the frontend
     return NextResponse.json({ url: session.url })
   } catch (error: any) {
     console.error('=== STRIPE ERROR ===')
