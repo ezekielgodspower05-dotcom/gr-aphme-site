@@ -31,8 +31,8 @@ export async function POST(req: NextRequest) {
       allowed_payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
-      success_url: `http://localhost:3000/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `http://localhost:3000/cart`,
+      success_url: `${req.headers.get('origin')}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.headers.get('origin')}/cart`,
     })
 
     return NextResponse.json({ url: session.url })
