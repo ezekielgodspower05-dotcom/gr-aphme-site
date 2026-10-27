@@ -21,6 +21,7 @@
     "@payloadcms/db-postgres": "^3.90.1",
     "@payloadcms/db-sqlite": "3.90.1",
     "@payloadcms/next": "^3.90.1",
+    "@payloadcms/plugin-stripe": "^3.92.0",
     "@payloadcms/richtext-lexical": "^3.90.1",
     "@payloadcms/storage-vercel-blob": "^3.90.1",
     "@payloadcms/ui": "3.90.1",

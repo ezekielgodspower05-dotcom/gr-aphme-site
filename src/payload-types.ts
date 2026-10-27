@@ -74,6 +74,7 @@ export interface Config {
     threads: Thread;
     replies: Reply;
     products: Product;
+    orders: Order;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -88,6 +89,7 @@ export interface Config {
     threads: ThreadsSelect<false> | ThreadsSelect<true>;
     replies: RepliesSelect<false> | RepliesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
+    orders: OrdersSelect<false> | OrdersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -336,6 +338,37 @@ export interface Product {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders".
+ */
+export interface Order {
+  id: number;
+  stripeSessionId: string;
+  customerEmail: string;
+  amountTotal: number;
+  currency: string;
+  status?: ('paid' | 'pending' | 'failed') | null;
+  items?:
+    | {
+        name?: string | null;
+        quantity?: number | null;
+        amount?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  shippingDetails?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -385,6 +418,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'products';
         value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'orders';
+        value: number | Order;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -543,6 +580,28 @@ export interface ProductsSelect<T extends boolean = true> {
   colors?: T;
   digitalFile?: T;
   license?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders_select".
+ */
+export interface OrdersSelect<T extends boolean = true> {
+  stripeSessionId?: T;
+  customerEmail?: T;
+  amountTotal?: T;
+  currency?: T;
+  status?: T;
+  items?:
+    | T
+    | {
+        name?: T;
+        quantity?: T;
+        amount?: T;
+        id?: T;
+      };
+  shippingDetails?: T;
   updatedAt?: T;
   createdAt?: T;
 }

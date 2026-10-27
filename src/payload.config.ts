@@ -1,4 +1,5 @@
 // force rebuild
+import { stripePlugin } from '@payloadcms/plugin-stripe'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
@@ -15,6 +16,7 @@ import { Categories } from './collections/Categories'
 import { Threads } from './collections/Threads'
 import { Replies } from './collections/Replies'
 import { Products } from './collections/Products'
+import { Orders } from './collections/orders'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -31,7 +33,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Posts, Categories, Threads, Replies, Products],
+  collections: [Users, Media, Posts, Categories, Threads, Replies, Products, Orders],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -49,6 +51,34 @@ export default buildConfig({
       token: process.env.BLOB_READ_WRITE_TOKEN || '',
       collections: {
         media: true,
+      },
+    }),
+    stripePlugin({
+      stripeSecretKey: process.env.STRIPE_SECRET_KEY || '',
+      stripeWebhooksEndpointSecret: process.env.STRIPE_WEBHOOKS_ENDPOINT_SECRET,
+      webhooks: {
+        'checkout.session.completed': async ({ event, req }) => {
+          const session = event.data.object as any
+
+          // Create the order in Payload
+          await req.payload.create({
+            collection: 'orders' as any,
+            data: {
+              stripeSessionId: session.id,
+              customerEmail: session.customer_details?.email || 'unknown',
+              amountTotal: session.amount_total / 100, // Convert from cents
+              currency: session.currency,
+              status: 'paid',
+              items:
+                session.line_items?.data?.map((item: any) => ({
+                  name: item.description,
+                  quantity: item.quantity,
+                  amount: item.amount_total / 100,
+                })) || [],
+              shippingDetails: session.shipping_details || {},
+            } as any,
+          })
+        },
       },
     }),
   ],
