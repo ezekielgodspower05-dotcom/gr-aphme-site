@@ -3,6 +3,7 @@ import './styles.css'
 import { Nav } from './_components/Nav'
 import { CartProvider } from './_components/CartContext'
 import { CartDrawer } from './_components/CartDrawer'
+import { RegisterSW } from './_components/RegisterSW'
 
 export const metadata = {
   title: 'GR Aphme',
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </footer>
 
           <CartDrawer />
+          <RegisterSW />
         </CartProvider>
       </body>
     </html>
